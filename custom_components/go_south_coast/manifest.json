@@ -1,0 +1,8 @@
+{
+    "domain": "go_south_coast",
+    "name": "Go South Coast bus times",
+    "version": "0.1",
+    "requirements": ["requests"],
+    "integration_type": "service",
+    "iot_class": "cloud_polling"
+  }
