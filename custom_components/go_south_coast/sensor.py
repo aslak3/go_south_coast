@@ -225,6 +225,7 @@ class go_south_coastSensor(SensorEntity):
         
     @property
     def native_unit_of_measurement(self):
+        """Return the unit for the ETA of the bus"""
         return "min"
 
 
@@ -232,3 +233,8 @@ class go_south_coastSensor(SensorEntity):
     def extra_state_attributes(self):
         """Return the attributes of the bus stop."""
         return self._attributes
+
+    @property
+    def icon(self):
+        """Return an icon for the bus stop."""
+        return "mdi:bus-clock"
