@@ -67,12 +67,64 @@ sensor:
 * `name`: This is the "sub company" bus provider name and is only used to form up the sensor entity IDs. The default is `bluestar` simply because that happens to be my local bus company.
 * `url_prefix`: The URL prefix for the bus stop data, as served up by Go South Coast's infrastructure. The default is `https://www.bluestarbus.co.uk/stops/`, only because that happens to be my local bus company.
 
+## Prototype dashboard card
+
+In lieu of a proper custom dashboard card it is possible to use a Markdown card to display bus information in a presentable manor:
+
+````yaml
+type: markdown
+entities:
+  - sensor.go_south_coast_whatever1
+  - sensor.go_south_coast_whatever2
+  - sensor.go_south_coast_whatever3
+content: >
+  {% for entity in config.entities %}
+  <h1>{{ state_attr(entity,"friendly_name") }}</h1>
+
+  <p><b>{{ state_attr(entity, "title") }}</b></p>
+
+  <p>Next bus is in {{ states(entity) }} mins</p>
+
+  <h2>Moving</h2>
+
+  <table width=400>
+  {% for bus in state_attr(entity, "moving_queue") %}
+  <tr>
+    <td width=50%>{{ bus.when }}</td>
+    <td width=10%>{{ bus.service }}</td>
+    <td width=40%>{{ bus.destination }}</td>
+  </tr>
+  {% endfor %}
+  </table>
+
+  <h2>Stationary</h2>
+
+  <table width=400>
+  {% for bus in state_attr(entity, "stationary_queue") %}
+  <tr>
+    <td width=50%>{{ bus.when }}</td>
+    <td width=10%>{{ bus.service }}</td>
+    <td width=40%>{{ bus.destination }}</td>
+  </tr>
+  {% endfor %}
+  </table>
+
+  <hr>
+  {% endfor %}
+````
+
+Combined with a summary view of all bus stops it works quite well:
+
+![Summary card](images/go_south_coast_dashboard_card_summary.png)
+
+![Markdown card](images/go_south_coast_dashboard_card.png)
+
 ## TODO
 
 * Better error handling
 * Add a integration icon.
 * Add a simple configuration UI.
-* A custom dashboard card!
+* A proper custom dashboard card!
 * Figure out how to create a Home Assistant addon, assuming anyone actually uses this thing.
 
 ## Note!
