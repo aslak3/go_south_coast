@@ -145,9 +145,11 @@ class go_south_coastSensor(SensorEntity):
         title = root.xpath('/html/head/title')[0].text # TODO: catch no match
         title = re.sub(" - Live Departures$", "", title)
         self._attributes["title"] = title
-
         self._attributes["summary"] = ""
+
+        summary: list[str] = []
         i = 0
+
         for elem in root.xpath('/html/body/div/div/div/ol/li/a/p'):
             match = re.search(regex, elem.text, re.IGNORECASE)
             service = match.group(1)
@@ -189,10 +191,9 @@ class go_south_coastSensor(SensorEntity):
                         })
 
                     if (i < self._max_summary_busses):
-                        self._attributes["summary"] = self._attributes["summary"] + " " + when
+                        summary.append(re.sub(" min", "m", re.sub(" mins", "m", when)))
 
-                self._attributes["summary"] = re.sub(" mins", "m", self._attributes["summary"])
-                self._attributes["summary"] = re.sub(" min", "m", self._attributes["summary"])
+                self._attributes["summary"] = " ".join(summary)
 
                 i = i + 1
 
@@ -222,12 +223,11 @@ class go_south_coastSensor(SensorEntity):
             return int(difference.seconds / 60)
         else:
             return None
-        
+
     @property
     def native_unit_of_measurement(self):
         """Return the unit for the ETA of the bus"""
         return "min"
-
 
     @property
     def extra_state_attributes(self):
